@@ -10,6 +10,26 @@
       "StackName": "amplify-productidplatform-dev-42858",
       "StackId": "arn:aws:cloudformation:ap-southeast-2:772654565609:stack/amplify-productidplatform-dev-42858/5c825f40-f34e-11ed-bce4-0236b294a034",
       "AmplifyAppId": "d82wmndi5iqtj"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d82wmndi5iqtj",
+          "type": "cicd"
+        }
+      },
+      "function": {
+        "authFunction": {
+          "deploymentBucketName": "amplify-productidplatform-dev-42858-deployment",
+          "s3Key": "amplify-builds/authFunction-7051394d77775059636b-build.zip"
+        }
+      },
+      "storage": {
+        "productDB": {}
+      },
+      "api": {
+        "authApi": {}
+      }
     }
   }
 }
