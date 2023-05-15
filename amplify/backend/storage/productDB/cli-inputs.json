@@ -1,0 +1,10 @@
+{
+  "resourceName": "productDB",
+  "tableName": "userTable",
+  "partitionKey": {
+    "fieldName": "id",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}
