@@ -8,6 +8,34 @@ const ManageProduct = (props) => {
         textInput: "",
         selectedValue: "Gucci",
     });
+    const [divs, setDivs] = useState([]);
+    const addDivs = () => {
+        const newDiv = (
+            <div key={divs.length}>
+                <span>Brand Details</span>
+                <hr style={{ margin: "10px auto" }} />
+                <div className="ManagePages-card-right-content">
+                    <div className="ManagePages-card-right-content-title">Name</div>
+                    <input type="text" name="brand_name" onChange={handleChange} />
+                </div>
+                <div className="ManagePages-card-right-content">
+                    <div className="ManagePages-card-right-content-title">Category</div>
+                    <select onChange={handleChange} name="category">
+                        <option value={"Fashion"}>Fashion</option>
+                        <option value={"Fast-consumeable"}>Fast-consumeable</option>
+                        <option value={"Other"}>Other</option>
+                    </select>
+                </div>
+                <div>
+                    <button className="ManagePages-btn right">Add/Remove</button>
+                    <button className="ManagePages-btn right" style={{ marginLeft: "20px" }}>
+                        Update
+                    </button>
+                </div>
+            </div>
+        );
+        setDivs([...divs, newDiv]);
+    };
     const handleChange = (e) => {
         setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
@@ -22,6 +50,33 @@ const ManageProduct = (props) => {
     };
     return (
         <>
+            <div className="ManagePage-product">
+                <span>Brand Details</span>
+                <button className="ManagePages-btn circle" onClick={addDivs}>
+                    +
+                </button>
+            </div>
+            <hr style={{ margin: "10px auto" }} />
+            <div className="ManagePages-card-right-content">
+                <div className="ManagePages-card-right-content-title">Name</div>
+                <input type="text" name="brand_name" onChange={handleChange} />
+            </div>
+            <div className="ManagePages-card-right-content">
+                <div className="ManagePages-card-right-content-title">Category</div>
+                <select onChange={handleChange} name="category">
+                    <option value={"Fashion"}>Fashion</option>
+                    <option value={"Education"}>Education</option>
+                    <option value={"Financial"}>Financial</option>
+                    <option value={"IT"}>IT</option>
+                </select>
+            </div>
+            <div>
+                <button className="ManagePages-btn right">Add/Remove</button>
+                <button className="ManagePages-btn right" style={{ marginLeft: "20px" }}>
+                    Update
+                </button>
+            </div>
+            {divs.map((div) => div)}
             <span>Product Details</span>
             <hr style={{ margin: "10px auto" }} />
             <div className="ManagePages-card-right-content">

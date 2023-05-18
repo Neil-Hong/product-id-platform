@@ -22,13 +22,18 @@
         "authFunction": {
           "deploymentBucketName": "amplify-productidplatform-dev-42858-deployment",
           "s3Key": "amplify-builds/authFunction-7051394d77775059636b-build.zip"
+        },
+        "productFunction": {
+          "deploymentBucketName": "amplify-productidplatform-dev-42858-deployment",
+          "s3Key": "amplify-builds/productFunction-6d726a45626a49643956-build.zip"
         }
       },
       "storage": {
         "productDB": {}
       },
       "api": {
-        "authApi": {}
+        "authApi": {},
+        "productApi": {}
       }
     }
   }
