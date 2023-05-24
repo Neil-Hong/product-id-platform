@@ -25,7 +25,7 @@
         },
         "productFunction": {
           "deploymentBucketName": "amplify-productidplatform-dev-42858-deployment",
-          "s3Key": "amplify-builds/productFunction-6d726a45626a49643956-build.zip"
+          "s3Key": "amplify-builds/productFunction-4f637232565930513655-build.zip"
         }
       },
       "storage": {

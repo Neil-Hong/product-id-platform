@@ -30,6 +30,10 @@ app.use(function (req, res, next) {
 
 app.post("/products/registerBusiness", products.registerBusiness);
 app.post("/products/getBusinessName", products.getBusinessName);
+app.post("/products/registerBrands", products.registerBrands);
+app.post("/products/getBrandName", products.getBrandName);
+app.post("/products/addProducts", products.addProducts);
+app.post("/products/updateWeb3Info", products.updateWeb3Info);
 
 app.listen(3000, function () {
     console.log("App started");

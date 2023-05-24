@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { API } from "aws-amplify";
-import { useParams } from "react-router-dom";
 
-const ManageAccount = () => {
+const ManageAccount = (props) => {
     const [inputs, setInputs] = useState({
         business_name: "",
         address: "",
@@ -14,12 +13,11 @@ const ManageAccount = () => {
     const handleChange = (e) => {
         setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
-    const { id } = useParams();
     const handleRegister = async (e) => {
         e.preventDefault();
         const data = {
             body: {
-                username: id,
+                username: props.username,
                 business_name: inputs.business_name,
                 address: inputs.address,
                 website: inputs.website,
@@ -38,28 +36,49 @@ const ManageAccount = () => {
     };
     return (
         <>
-            <span>Business Details</span>
-            <hr style={{ margin: "10px auto" }} />
-            <div className="ManagePages-card-right-content">
-                <div className="ManagePages-card-right-content-title">Name</div>
-                <input type="text" name="business_name" onChange={handleChange} />
-            </div>
-            <div className="ManagePages-card-right-content">
-                <div className="ManagePages-card-right-content-title">Address</div>
-                <input type="text" name="address" onChange={handleChange} />
-            </div>
-            <div className="ManagePages-card-right-content">
-                <div className="ManagePages-card-right-content-title">Website</div>
-                <input type="text" name="website" onChange={handleChange} />
-            </div>
-            <div>
-                <button className="ManagePages-btn right" onClick={handleRegister}>
-                    Register
-                </button>
-                {/* <button className="ManagePages-btn right" style={{ marginLeft: "20px" }}>
+            {props.receivedBusiness ? (
+                <div style={{ marginBottom: "30px" }}>
+                    <span>Business Details</span>
+                    <hr style={{ margin: "10px auto" }} />
+                    <div className="ManagePages-card-right-content">
+                        <div className="ManagePages-card-right-content-title">Name</div>
+                        <div>{props.receivedBusiness.businessName}</div>
+                    </div>
+                    <div className="ManagePages-card-right-content">
+                        <div className="ManagePages-card-right-content-title">Address</div>
+                        <div>{props.receivedBusiness.businessAddress}</div>
+                    </div>
+                    <div className="ManagePages-card-right-content">
+                        <div className="ManagePages-card-right-content-title">Website</div>
+                        <div>{props.receivedBusiness.businessWebsite}</div>
+                    </div>
+                </div>
+            ) : (
+                <>
+                    <span>Business Details</span>
+                    <hr style={{ margin: "10px auto" }} />
+                    <div className="ManagePages-card-right-content">
+                        <div className="ManagePages-card-right-content-title">Name</div>
+                        <input type="text" name="business_name" onChange={handleChange} />
+                    </div>
+                    <div className="ManagePages-card-right-content">
+                        <div className="ManagePages-card-right-content-title">Address</div>
+                        <input type="text" name="address" onChange={handleChange} />
+                    </div>
+                    <div className="ManagePages-card-right-content">
+                        <div className="ManagePages-card-right-content-title">Website</div>
+                        <input type="text" name="website" onChange={handleChange} />
+                    </div>
+                    <div>
+                        <button className="ManagePages-btn right" onClick={handleRegister}>
+                            Register
+                        </button>
+                        {/* <button className="ManagePages-btn right" style={{ marginLeft: "20px" }}>
                     Update
                 </button> */}
-            </div>
+                    </div>
+                </>
+            )}
         </>
     );
 };
