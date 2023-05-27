@@ -34,6 +34,7 @@ app.post("/products/registerBrands", products.registerBrands);
 app.post("/products/getBrandName", products.getBrandName);
 app.post("/products/addProducts", products.addProducts);
 app.post("/products/updateWeb3Info", products.updateWeb3Info);
+app.post("/products/updateBusiness", products.updateBusiness);
 
 app.listen(3000, function () {
     console.log("App started");

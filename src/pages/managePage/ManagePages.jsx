@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from "react";
 import "./ManagePages.style.scss";
 import ManageAccount from "./ManageAccount";
-import ManageProduct from "./ManageProduct";
+import ManageProducts from "./ManageProducts";
 import ViewReports from "./ViewReports";
 import { API } from "aws-amplify";
 import { useParams } from "react-router-dom";
-import ManageBrand from "./ManageBrand";
 import Web3Upload from "./Web3Upload";
+import { useDispatch, useSelector } from "react-redux";
+import { tagChosed } from "../../redux/users/userSlice";
 
 const ManagePages = () => {
     const { id } = useParams();
-    const [selected, setSelected] = useState("manageaccount");
     const [business, setBusiness] = useState({});
+    const tagSelected = useSelector((state) => state.user.tag);
+    console.log(tagSelected);
+    const dispatch = useDispatch();
     const handleButtonClick = (page) => {
-        setSelected(page);
+        // setSelected(page);
+        dispatch(tagChosed(page));
     };
 
     const scrollAnimate = () => {
@@ -90,24 +94,24 @@ const ManagePages = () => {
                         {" "}
                         <div className="ManagePages-card-left">
                             <button
-                                className="ManagePages-btn"
+                                className={`ManagePages-btn ${tagSelected === "manageaccount" ? "selected" : ""}`}
                                 onClick={() => {
                                     handleButtonClick("manageaccount");
                                 }}
                             >
                                 Manage Account
                             </button>
-                            <button
-                                className="ManagePages-btn"
+                            {/* <button
+                                className={`ManagePages-btn ${tagSelected === "managebrand" ? "selected" : ""}`}
                                 onClick={() => {
                                     handleButtonClick("managebrand");
                                 }}
                             >
                                 Manage Brands
-                            </button>
+                            </button> */}
 
                             <button
-                                className="ManagePages-btn"
+                                className={`ManagePages-btn ${tagSelected === "manageproduct" ? "selected" : ""}`}
                                 onClick={() => {
                                     handleButtonClick("manageproduct");
                                 }}
@@ -115,7 +119,7 @@ const ManagePages = () => {
                                 Manage Products
                             </button>
                             <button
-                                className="ManagePages-btn"
+                                className={`ManagePages-btn ${tagSelected === "viewreport" ? "selected" : ""}`}
                                 onClick={() => {
                                     handleButtonClick("viewreport");
                                 }}
@@ -123,26 +127,30 @@ const ManagePages = () => {
                                 View Reports
                             </button>
                             <button
-                                className="ManagePages-btn"
+                                className={`ManagePages-btn ${tagSelected === "web3" ? "selected" : ""}`}
                                 onClick={() => {
                                     handleButtonClick("web3");
                                 }}
                             >
-                                Web3
+                                Co2.Storage
                             </button>
                         </div>
                         <div className="ManagePages-card-right">
-                            {selected === "manageaccount" ? (
+                            {tagSelected === "manageaccount" ? (
                                 <ManageAccount receivedBusiness={business} username={id} />
                             ) : null}
-                            {selected === "managebrand" ? (
+                            {/* {tagSelected === "managebrand" ? (
                                 <ManageBrand username={id} businessName={business.businessName} />
+                            ) : null} */}
+                            {tagSelected === "manageproduct" ? (
+                                <ManageProducts
+                                    username={id}
+                                    businessName={business.businessName}
+                                    dispatch={dispatch}
+                                />
                             ) : null}
-                            {selected === "manageproduct" ? (
-                                <ManageProduct username={id} businessName={business.businessName} />
-                            ) : null}
-                            {selected === "viewreport" ? <ViewReports /> : null}
-                            {selected === "web3" ? <Web3Upload username={id} /> : null}
+                            {tagSelected === "viewreport" ? <ViewReports /> : null}
+                            {tagSelected === "web3" ? <Web3Upload username={id} /> : null}
                         </div>
                     </div>
                 </div>
