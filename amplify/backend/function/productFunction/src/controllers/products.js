@@ -200,12 +200,21 @@ const getBusinessName = async (req, res) => {
             res.json({ err });
         } else {
             if (data.Items.length > 0) {
-                const result = {
-                    businessName: data.Items[0].business_info[0].business_name,
-                    businessWebsite: data.Items[0].business_info[0].website,
-                    businessAddress: data.Items[0].business_info[0].address,
-                };
-                res.send(result);
+                if (data.Items[0].business_info.length > 0) {
+                    const result = {
+                        businessName: data.Items[0].business_info[0].business_name,
+                        businessWebsite: data.Items[0].business_info[0].website,
+                        businessAddress: data.Items[0].business_info[0].address,
+                    };
+                    res.send(result);
+                } else {
+                    const emptyResult = {
+                        businessName: "",
+                        businessWebsite: "",
+                        businessAddress: "",
+                    };
+                    res.send(emptyResult);
+                }
             }
         }
     });
@@ -225,10 +234,18 @@ const getBrandName = async (req, res) => {
             res.json({ err });
         } else {
             if (data.Items.length > 0) {
-                const result = {
-                    brandName: data.Items[0].business_info[0].brand_info,
-                };
-                res.send(result);
+                if (data.Items[0].business_info.length === 0) {
+                    res.status(400).send({ message: "Please register business first!" });
+                } else {
+                    if (data.Items[0].business_info[0].business_name === "") {
+                        res.status(400).send({ message: "Please register business first!" });
+                    } else {
+                        const result = {
+                            brandName: data.Items[0].business_info[0].brand_info,
+                        };
+                        res.send(result);
+                    }
+                }
             }
         }
     });
@@ -276,7 +293,7 @@ const addProducts = async (req, res) => {
                         if (err) {
                             console.error("Error retrieving item:", err);
                         } else {
-                            console.log(data.Item.business_info[0].brand_info);
+                            // console.log(data.Item.business_info[0].brand_info);
                             const productsInfoToUpdate = data.Item.business_info[0].brand_info.find(
                                 (info) => info.brand_name === brand_name
                             );
@@ -286,34 +303,47 @@ const addProducts = async (req, res) => {
                                     newToken.push(token[i]);
                                 }
                             }
-                            if (productsInfoToUpdate) {
-                                productsInfoToUpdate.product_info.push({
-                                    product_name: product_name,
-                                    specification: specification,
-                                    materials: materials,
-                                    practises: practises,
-                                    c_inputs: c_inputs,
-                                    token: newToken,
-                                });
-
-                                const updateParams = {
-                                    TableName: "userTable-dev",
-                                    Key: { id: data.Item.id },
-                                    UpdateExpression: "SET business_info = :businessInfo",
-                                    ExpressionAttributeValues: {
-                                        ":businessInfo": data.Item.business_info,
-                                    },
-                                    ReturnValues: "ALL_NEW",
-                                };
-
-                                docClient.update(updateParams, (err, data) => {
-                                    if (err) {
-                                        res.json({ err });
-                                    } else {
-                                        res.send({ message: "Products register Successfully!" });
-                                    }
-                                });
+                            console.log(productsInfoToUpdate);
+                            console.log(newToken);
+                            const checkProduct = productsInfoToUpdate.product_info.find(
+                                (item) => item.product_name === product_name
+                            );
+                            console.log(checkProduct);
+                            if (checkProduct) {
+                                checkProduct.c_inputs = c_inputs;
+                                checkProduct.materials = materials;
+                                checkProduct.specification = specification;
+                                checkProduct.practises = practises;
+                                checkProduct.token = newToken;
+                            } else {
+                                if (productsInfoToUpdate) {
+                                    productsInfoToUpdate.product_info.push({
+                                        product_name: product_name,
+                                        specification: specification,
+                                        materials: materials,
+                                        practises: practises,
+                                        c_inputs: c_inputs,
+                                        token: newToken,
+                                    });
+                                }
                             }
+                            const updateParams = {
+                                TableName: "userTable-dev",
+                                Key: { id: data.Item.id },
+                                UpdateExpression: "SET business_info = :businessInfo",
+                                ExpressionAttributeValues: {
+                                    ":businessInfo": data.Item.business_info,
+                                },
+                                ReturnValues: "ALL_NEW",
+                            };
+
+                            docClient.update(updateParams, (err, data) => {
+                                if (err) {
+                                    res.json({ err });
+                                } else {
+                                    res.send({ message: "Products register Successfully!" });
+                                }
+                            });
                         }
                     });
                 }
@@ -322,7 +352,7 @@ const addProducts = async (req, res) => {
     }
 };
 
-const updateWeb3Info = async (req, res) => {
+const getItem = async (req, res) => {
     const { username } = req.body;
     var scanParams = {
         TableName: "userTable-dev",
@@ -338,8 +368,59 @@ const updateWeb3Info = async (req, res) => {
         if (err) {
             res.json({ err });
         } else {
-            const result = data.Items[0].business_info;
+            const result = data.Items[0];
             res.send(result);
+        }
+    });
+};
+
+const addCo2Token = async (req, res) => {
+    const { username, token } = req.body;
+    var params = {
+        TableName: "userTable-dev",
+        FilterExpression: "#username = :usernameValue",
+        ExpressionAttributeNames: {
+            "#username": "username",
+        },
+        ExpressionAttributeValues: {
+            ":usernameValue": username,
+        },
+    };
+    await docClient.scan(params, async function (err, data) {
+        if (err) {
+            res.json({ err });
+        } else {
+            if (data.Items.length > 0) {
+                const getParams = {
+                    TableName: "userTable-dev",
+                    Key: { id: data.Items[0].id },
+                };
+                await docClient.get(getParams, (err, data) => {
+                    if (err) {
+                        console.error("Error retrieving item:", err);
+                    } else {
+                        console.log(data.Item.business_info[0].brand_info);
+                        data.Item.co2_token.push(token);
+                        const updateParams = {
+                            TableName: "userTable-dev",
+                            Key: { id: data.Item.id },
+                            UpdateExpression: "SET co2_token= :tokenValue",
+                            ExpressionAttributeValues: {
+                                ":tokenValue": data.Item.co2_token,
+                            },
+                            ReturnValues: "ALL_NEW",
+                        };
+
+                        docClient.update(updateParams, (err, data) => {
+                            if (err) {
+                                res.json({ err });
+                            } else {
+                                res.send({ message: "Products register Successfully!" });
+                            }
+                        });
+                    }
+                });
+            }
         }
     });
 };
@@ -350,7 +431,8 @@ const products = {
     registerBrands: registerBrands,
     getBrandName: getBrandName,
     addProducts: addProducts,
-    updateWeb3Info: updateWeb3Info,
+    getItem: getItem,
     updateBusiness: updateBusiness,
+    addCo2Token: addCo2Token,
 };
 module.exports = products;

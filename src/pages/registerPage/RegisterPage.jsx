@@ -1,21 +1,18 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import "./LoginPage.style.scss";
-import { API } from "aws-amplify";
-import { userLogIn } from "../../redux/users/userSlice";
 import { useNavigate } from "react-router-dom";
+import { API } from "aws-amplify";
+import { useDispatch } from "react-redux";
 import { changeLoading } from "../../redux/users/productSlice";
 import { ToastContainer, toast } from "react-toastify";
 
-const LoginPage = () => {
+const RegisterPage = () => {
     const [inputs, setInputs] = useState({
         username: "",
         email: "",
         password: "",
     });
-
-    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleChange = (e) => {
         setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -48,21 +45,24 @@ const LoginPage = () => {
             className: "toast",
         });
     };
-    const handleLoginSubmit = async (e) => {
-        dispatch(changeLoading(true));
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        dispatch(changeLoading(true));
+
+        const data = {
+            body: {
+                username: inputs.username,
+                email: inputs.email,
+                password: inputs.password,
+            },
+        };
         try {
-            const data = {
-                body: {
-                    username: inputs.username,
-                    password: inputs.password,
-                },
-            };
-            const apiData = await API.post("authApi", "/auth/login", data);
+            const apiData = await API.post("authApi", "/auth/register", data);
+            console.log(apiData);
             successNotify(apiData.message);
-            dispatch(userLogIn(data.body.username));
             dispatch(changeLoading(false));
-            window.location.replace(`/manage/${inputs.username}`);
+            navigate("/login");
         } catch (error) {
             notify(error.response.data.message);
             dispatch(changeLoading(false));
@@ -84,25 +84,24 @@ const LoginPage = () => {
             />
             <div className="loginPage-container">
                 <div className="loginPage-wrapper">
-                    <h2 className="title">Login</h2>
+                    <h2 className="title">Register</h2>
                     <form>
                         <div className="loginPage-user-box">
                             <input type="text" name="username" required onChange={handleChange}></input>
                             <label>Username</label>
                         </div>
                         <div className="loginPage-user-box">
+                            <input type="email" name="email" required onChange={handleChange}></input>
+                            <label>Email</label>
+                        </div>
+                        <div className="loginPage-user-box">
                             <input type="password" name="password" required onChange={handleChange}></input>
                             <label>Password</label>
                         </div>
-                        <div>
-                            <div className="button-wrapper" onClick={handleLoginSubmit}>
-                                <a href="/" className="button">
-                                    Login
-                                </a>
-                            </div>
-                        </div>
-                        <div className="loginPage-text">
-                            Do not have an account? <p onClick={() => navigate("/register")}>Register Here.</p>
+                        <div className="button-wrapper" onClick={handleSubmit}>
+                            <a href="/" className="button">
+                                Register
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -111,4 +110,4 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default RegisterPage;

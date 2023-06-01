@@ -21,11 +21,11 @@
       "function": {
         "authFunction": {
           "deploymentBucketName": "amplify-productidplatform-dev-42858-deployment",
-          "s3Key": "amplify-builds/authFunction-7051394d77775059636b-build.zip"
+          "s3Key": "amplify-builds/authFunction-33466250637675667533-build.zip"
         },
         "productFunction": {
           "deploymentBucketName": "amplify-productidplatform-dev-42858-deployment",
-          "s3Key": "amplify-builds/productFunction-77516d7550566e556d48-build.zip"
+          "s3Key": "amplify-builds/productFunction-4d65362b306e33475148-build.zip"
         }
       },
       "storage": {

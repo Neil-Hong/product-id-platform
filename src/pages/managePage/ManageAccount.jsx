@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { API } from "aws-amplify";
 import { RiEdit2Fill } from "react-icons/ri";
+import { useDispatch } from "react-redux";
+import { changeLoading } from "../../redux/users/productSlice";
+import { ToastContainer, toast } from "react-toastify";
+import { updateBusinessName } from "../../redux/users/userSlice";
 
 const ManageAccount = (props) => {
     const [inputs, setInputs] = useState({
@@ -10,18 +14,57 @@ const ManageAccount = (props) => {
         // brandName: "",
         // category: "Fashion",
     });
-    const [editing, setEditing] = useState(false);
+    const [business, setBusiness] = useState({});
+    const [editing, setEditing] = useState(true);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        getBusinessName();
+    }, []);
+
+    const getBusinessName = async () => {
+        dispatch(changeLoading(true));
+        try {
+            const data = {
+                body: {
+                    username: props.username,
+                },
+            };
+            const apiData = await API.post("productApi", "/products/getBusinessName", data);
+            setBusiness(apiData);
+            dispatch(changeLoading(false));
+            dispatch(updateBusinessName(apiData.businessName));
+        } catch (error) {
+            console.log(error.response);
+            dispatch(changeLoading(false));
+        }
+    };
 
     const handleChange = (e) => {
         setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
     const handleEdit = () => {
-        setEditing(true);
+        setEditing(false);
+    };
+
+    const notify = (text) => {
+        toast.success(text, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            className: "toast",
+        });
     };
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        dispatch(changeLoading(true));
         const data = {
             body: {
                 username: props.username,
@@ -35,15 +78,19 @@ const ManageAccount = (props) => {
         // console.log(data);
         try {
             const apiData = await API.post("productApi", "/products/registerBusiness", data);
-            alert(apiData.message);
+            notify(apiData.message);
+
+            dispatch(changeLoading(false));
             window.location.reload();
         } catch (error) {
             console.log(error.response);
+            dispatch(changeLoading(false));
         }
     };
 
     const handleUpdate = async (e) => {
         e.preventDefault();
+        dispatch(changeLoading(true));
         const data = {
             body: {
                 username: props.username,
@@ -57,68 +104,87 @@ const ManageAccount = (props) => {
         // console.log(data);
         try {
             const apiData = await API.post("productApi", "/products/updateBusiness", data);
-            alert(apiData.message);
-            window.location.reload();
+            dispatch(changeLoading(false));
+            notify(apiData.message);
+            const reload = () => {
+                window.location.reload();
+            };
+            setTimeout(reload, 5000);
+
             setEditing(false);
         } catch (error) {
             console.log(error.response);
+            dispatch(changeLoading(false));
         }
     };
+    console.log(business);
     return (
         <>
-            {props.receivedBusiness ? (
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={true}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+            {business && business.businessName ? (
                 <div style={{ marginBottom: "30px" }}>
                     <span>Business Details</span>
                     <RiEdit2Fill onClick={handleEdit} style={{ cursor: "pointer" }} />
                     <hr style={{ margin: "10px auto" }} />
                     <div className="ManagePages-card-right-content">
                         <div className="ManagePages-card-right-content-title">Name</div>
-                        {editing ? (
+                        {business.businessName && editing ? (
+                            <>
+                                <div>{business.businessName}</div>
+                            </>
+                        ) : (
                             <input
                                 type="text"
                                 name="business_name"
                                 onChange={handleChange}
-                                placeholder={props.receivedBusiness.businessName}
+                                placeholder={business.businessName}
                             />
-                        ) : (
-                            <>
-                                <div>{props.receivedBusiness.businessName}</div>
-                            </>
                         )}
                     </div>
                     <div className="ManagePages-card-right-content">
                         <div className="ManagePages-card-right-content-title">Address</div>
-                        {editing ? (
+                        {business.businessAddress && editing ? (
+                            <div>{business.businessAddress}</div>
+                        ) : (
                             <input
                                 type="text"
                                 name="address"
                                 onChange={handleChange}
-                                placeholder={props.receivedBusiness.businessAddress}
+                                placeholder={business.businessAddress}
                             />
-                        ) : (
-                            <div>{props.receivedBusiness.businessAddress}</div>
                         )}
                     </div>
                     <div className="ManagePages-card-right-content">
                         <div className="ManagePages-card-right-content-title">Website</div>
-                        {editing ? (
+                        {business.businessWebsite && editing ? (
+                            <>
+                                <div>{business.businessWebsite}</div>
+                            </>
+                        ) : (
                             <input
                                 type="text"
                                 name="website"
                                 onChange={handleChange}
-                                placeholder={props.receivedBusiness.businessWebsite}
+                                placeholder={business.businessWebsite}
                             />
-                        ) : (
-                            <>
-                                <div>{props.receivedBusiness.businessWebsite}</div>
-                            </>
                         )}
                     </div>
-                    {editing ? (
+                    {business.businessName && editing ? null : (
                         <button className="ManagePages-btn right" onClick={handleUpdate}>
                             Update
                         </button>
-                    ) : null}
+                    )}
                 </div>
             ) : (
                 <>
@@ -140,9 +206,6 @@ const ManageAccount = (props) => {
                         <button className="ManagePages-btn right" onClick={handleRegister}>
                             Register
                         </button>
-                        {/* <button className="ManagePages-btn right" style={{ marginLeft: "20px" }}>
-                    Update
-                </button> */}
                     </div>
                 </>
             )}

@@ -6,6 +6,7 @@ export const userSlice = createSlice({
         loggedIn: false,
         username: "",
         tag: "manageaccount",
+        businessName: "",
     },
     reducers: {
         userLogIn: (state, actions) => {
@@ -18,8 +19,11 @@ export const userSlice = createSlice({
         tagChosed: (state, actions) => {
             state.tag = actions.payload;
         },
+        updateBusinessName: (state, actions) => {
+            state.businessName = actions.payload;
+        },
     },
 });
 
-export const { userLogIn, userLogOut, tagChosed } = userSlice.actions;
+export const { userLogIn, userLogOut, tagChosed, updateBusinessName } = userSlice.actions;
 export default userSlice.reducer;

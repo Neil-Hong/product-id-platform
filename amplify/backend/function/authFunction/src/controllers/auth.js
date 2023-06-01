@@ -67,6 +67,8 @@ const register = async (req, res) => {
                             username: username,
                             email: email,
                             password: hash,
+                            business_info: [],
+                            co2_token: [],
                         },
                     };
                     await docClient.put(inputParams, function (err, data) {

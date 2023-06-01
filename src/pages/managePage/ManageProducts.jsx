@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { API } from "aws-amplify";
 import { Web3Storage } from "web3.storage";
 import { tagChosed } from "../../redux/users/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { changeLoading } from "../../redux/users/productSlice";
+import { ToastContainer, toast } from "react-toastify";
 
 const ManageProducts = (props) => {
     const [input, setInput] = useState({
@@ -24,9 +27,11 @@ const ManageProducts = (props) => {
         token: [],
     });
     const [divs, setDivs] = useState([]);
-    const [divNum, setDivNum] = useState(2);
+    // const [divNum, setDivNum] = useState(2);
     const [uploaded, setUploaded] = useState(false);
     const [showProduct, setShowProduct] = useState([]);
+    const dispatch = useDispatch();
+    const businessName = useSelector((state) => state.user.businessName);
 
     const handleChange = (e) => {
         e.preventDefault();
@@ -52,24 +57,31 @@ const ManageProducts = (props) => {
                                 <hr style={{ margin: "10px auto" }} />
                                 <div className="ManagePages-card-right-content">
                                     <div className="ManagePages-card-right-content-title">Product Name</div>
-                                    <div>{item.product_name}</div>
+                                    <div className="ManagePages-card-right-content-item">{item.product_name}</div>
                                 </div>
                                 <div className="ManagePages-card-right-content">
                                     <div className="ManagePages-card-right-content-title">Specification</div>
-                                    <div>{item.specification}</div>
+                                    <div className="ManagePages-card-right-content-item">{item.specification}</div>
                                 </div>
                                 <div className="ManagePages-card-right-content">
                                     <div className="ManagePages-card-right-content-title">Chemical Inputs</div>
-                                    <div>{item.c_inputs}</div>
+                                    <div className="ManagePages-card-right-content-item">{item.c_inputs}</div>
                                 </div>
                                 <div className="ManagePages-card-right-content">
                                     <div className="ManagePages-card-right-content-title">Materials</div>
-                                    <div>{item.materials}</div>
+                                    <div className="ManagePages-card-right-content-item">{item.materials}</div>
                                 </div>
                                 <div className="ManagePages-card-right-content">
                                     <div className="ManagePages-card-right-content-title">Practises</div>
-                                    <div>{item.practises}</div>
+                                    <div className="ManagePages-card-right-content-item">{item.practises}</div>
                                 </div>
+
+                                {item.token.map((i, index) => (
+                                    <div className="ManagePages-card-right-content">
+                                        <div className="ManagePages-card-right-content-title">token {index + 1}</div>
+                                        <div className="ManagePages-card-right-content-item">{i}</div>
+                                    </div>
+                                ))}
                             </>
                         );
                     });
@@ -118,36 +130,40 @@ const ManageProducts = (props) => {
         }
     };
 
-    const removeDiv = (id) => {
-        setDivs((prevDivs) => prevDivs.filter((div) => div.key !== id.toString()));
-        setDivNum((prevNum) => prevNum - 1);
-        setInput((prevInputs) => {
-            const dynamicProductName = [...prevInputs.dynamicProductName];
-            dynamicProductName.splice(id - 2, 1);
-            const dynamicC_inputs = [...prevInputs.dynamicC_inputs];
-            dynamicC_inputs.splice(id - 2, 1);
-            const dynamicMaterials = [...prevInputs.dynamicMaterials];
-            dynamicMaterials.splice(id - 2, 1);
-            const dynamicPractises = [...prevInputs.dynamicPractises];
-            dynamicPractises.splice(id - 2, 1);
-            const dynamicSpecification = [...prevInputs.dynamicSpecification];
-            dynamicSpecification.splice(id - 2, 1);
-            return {
-                ...prevInputs,
-                dynamicProductName,
-                dynamicC_inputs,
-                dynamicMaterials,
-                dynamicPractises,
-                dynamicSpecification,
-            };
-        });
-    };
-
     useEffect(() => {
         getBrand();
     }, []);
 
+    const notify = (text) => {
+        toast.error(text, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            className: "toast",
+        });
+    };
+
+    const successNotify = (text) => {
+        toast.success(text, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            className: "toast",
+        });
+    };
+
     const addProducts = async () => {
+        dispatch(changeLoading(true));
         const fileObj = {
             brand_name: input.brandName,
             brand_category: input.category,
@@ -177,15 +193,16 @@ const ManageProducts = (props) => {
                     token: [...input.token, cidToken],
                 },
             };
-            console.log(data);
-            const apiData = await API.post("productApi", "/products/addProducts", data);
-            // alert(apiData.message);
+            await API.post("productApi", "/products/addProducts", data);
+            dispatch(changeLoading(false));
         } catch (error) {
-            alert(error.response.data.message);
+            notify(error.response.data.message);
+            dispatch(changeLoading(false));
         }
     };
 
     const getBrand = async () => {
+        dispatch(changeLoading(true));
         const data = {
             body: {
                 username: props.username,
@@ -196,59 +213,11 @@ const ManageProducts = (props) => {
             setInput((prev) => ({ ...prev, updateData: apiData.brandName }));
             const brandList = apiData.brandName || [];
             setInput((prev) => ({ ...prev, selectedValue: brandList }));
+            dispatch(changeLoading(false));
         } catch (error) {
-            alert(error.response.data.message);
+            notify(error.response.data.message);
+            dispatch(changeLoading(false));
         }
-    };
-
-    const addProductDivs = () => {
-        const id = divNum; // Unique ID for each div
-        const newDiv = (
-            <div key={id} style={{ marginTop: "30px" }}>
-                <div className="ManagePage-product">
-                    <div className="ManagePage-product-subtitle">Product {divNum}</div>
-                    <button
-                        className="ManagePages-btn circle"
-                        onClick={() => {
-                            removeDiv(id);
-                        }}
-                    >
-                        -
-                    </button>
-                </div>
-                <hr style={{ margin: "10px auto" }} />
-                <div className="ManagePages-card-right-content">
-                    <div className="ManagePages-card-right-content-title">Product Name</div>
-                    <input type="text" onChange={handleChange} name="dynamicProductName" data-index={divNum} />
-                </div>
-                <div className="ManagePages-card-right-content">
-                    <div className="ManagePages-card-right-content-title">Specification</div>
-                    <input type="text" onChange={handleChange} name="dynamicSpecification" data-index={divNum} />
-                </div>
-                <div className="ManagePages-card-right-content">
-                    <div className="ManagePages-card-right-content-title">Chemica Inputs</div>
-                    <input type="text" onChange={handleChange} name="dynamicC_inputs" data-index={divNum} />
-                </div>
-                <div className="ManagePages-card-right-content">
-                    <div className="ManagePages-card-right-content-title">Materials</div>
-                    <input type="text" onChange={handleChange} name="dynamicMaterials" data-index={divNum} />
-                </div>
-                <div className="ManagePages-card-right-content">
-                    <div className="ManagePages-card-right-content-title">Practises</div>
-                    <input type="text" onChange={handleChange} name="dynamicPractises" data-index={divNum} />
-                </div>
-            </div>
-        );
-        setDivNum((prevNum) => prevNum + 1);
-        setDivs([...divs, newDiv]);
-        setInput((prev) => ({
-            ...prev,
-            dynamicProductName: [...prev.dynamicProductName],
-            dynamicC_inputs: [...prev.dynamicC_inputs],
-            dynamicMaterials: [...prev.dynamicMaterials],
-            dynamicPractises: [...prev.dynamicPractises],
-            dynamicSpecification: [...prev.dynamicSpecification],
-        }));
     };
 
     function getAccessToken() {
@@ -293,94 +262,45 @@ const ManageProducts = (props) => {
         }
     }
 
-    const updateToWeb3 = async () => {
-        const fileObj = {
-            brand_name: input.brandName,
-            brand_category: input.category,
-            product_info: {
-                productName: input.product_name,
-                specification: input.specification,
-                materials: input.materials,
-                practises: input.practises,
-                c_inputs: input.c_inputs,
-            },
-        };
-        storeFiles(fileObj);
-    };
-    console.log(input);
-
     const registerBrands = async (e) => {
         e.preventDefault();
+        dispatch(changeLoading(true));
         const data = {
             body: {
                 username: props.username,
                 brand_name: input.brand_name,
                 brand_category: input.brand_category,
-                business_name: props.businessName,
+                business_name: businessName,
             },
         };
         try {
             const apiData = await API.post("productApi", "/products/registerBrands", data);
-            alert(apiData.message);
+            successNotify(apiData.message);
             props.dispatch(tagChosed("manageproduct"));
+            dispatch(changeLoading(false));
             window.location.reload();
         } catch (error) {
-            alert(error.response.data.message);
+            notify(error.response.data.message);
+            dispatch(changeLoading(false));
         }
     };
-    //     const selectElement = document.getElementById("selectBrand");
-    //     let result = selectElement.addEventListener("change", function (e) {
-    //         let selectedBrand = e.target.value;
-    //         return selectedBrand;
-    //     });
-    //     const productInfo = input.selectedValue.find(function (brand) {
-    //         return brand.brand_name === result;
-    //     });
-    //     console.log(productInfo);
-    //     if (productInfo) {
-    //         productInfo.productInfo.map((item, index) => {
-    //             return (
-    //                 <>
-    //                     <div className="ManagePage-product">
-    //                         <div className="ManagePage-product-subtitle">Product {index + 1}</div>
-    //                     </div>
-    //                     <hr style={{ margin: "10px auto" }} />
-    //                     <div className="ManagePages-card-right-content">
-    //                         <div className="ManagePages-card-right-content-title">Product Name</div>
-    //                         <div>{item.product_name}</div>
-    //                     </div>
-    //                     <div className="ManagePages-card-right-content">
-    //                         <div className="ManagePages-card-right-content-title">Specification</div>
-    //                         <div>{item.specification}</div>
-    //                     </div>
-    //                     <div className="ManagePages-card-right-content">
-    //                         <div className="ManagePages-card-right-content-title">Chemical Inputs</div>
-    //                         <div>{item.c_inputs}</div>
-    //                     </div>
-    //                     <div className="ManagePages-card-right-content">
-    //                         <div className="ManagePages-card-right-content-title">Materials</div>
-    //                         <div>{item.materials}</div>
-    //                     </div>
-    //                     <div className="ManagePages-card-right-content">
-    //                         <div className="ManagePages-card-right-content-title">Practises</div>
-    //                         <div>{item.practises}</div>
-    //                     </div>
-    //                 </>
-    //             );
-    //         });
-    //         console.log("品牌名称:", productInfo.brand_name);
-    //         console.log("品牌分类:", productInfo.brand_category);
-    //         console.log("产品信息:", productInfo.product_info);
-    //     }
-    // };
 
     return (
         <>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={true}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
             <div className="ManagePage-product-title">
                 <span>Brand Details</span>
-                {/* <button className="ManagePages-btn circle" onClick={addBrandDivs}>
-                    +
-                </button> */}
             </div>
 
             <hr style={{ margin: "0 0 10px 0" }} />

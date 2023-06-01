@@ -33,8 +33,9 @@ app.post("/products/getBusinessName", products.getBusinessName);
 app.post("/products/registerBrands", products.registerBrands);
 app.post("/products/getBrandName", products.getBrandName);
 app.post("/products/addProducts", products.addProducts);
-app.post("/products/updateWeb3Info", products.updateWeb3Info);
+app.post("/products/getItem", products.getItem);
 app.post("/products/updateBusiness", products.updateBusiness);
+app.post("/products/uploadCo2Token", products.addCo2Token);
 
 app.listen(3000, function () {
     console.log("App started");
