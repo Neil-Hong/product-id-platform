@@ -13,5 +13,10 @@ module.exports = function override(config, env) {
             Buffer: ["buffer", "Buffer"],
         })
     );
+    config.ignoreWarnings = [
+        { module: /node_modules\/web3/ },
+        { module: /node_modules\/dag-jose/ },
+        { module: /node_modules\/@chainsafe/ },
+    ];
     return config;
 };
