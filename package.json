@@ -55,6 +55,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "react-app-rewired": "^2.2.1"
+    "react-app-rewired": "^2.2.1",
+    "source-map-loader": "^4.0.1"
   }
 }
