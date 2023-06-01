@@ -25,15 +25,14 @@
     "redux": "^4.2.1",
     "redux-persist": "^6.0.0",
     "sass": "^1.62.0",
-    "source-map-loader": "^4.0.1",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "web-vitals": "^2.1.4",
     "web3.storage": "^4.5.4"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "start": "cross-env GENERATE_SOURCEMAP=false react-app-rewired start",
+    "build": "cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
@@ -56,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "react-app-rewired": "^2.2.1"
   }
 }
