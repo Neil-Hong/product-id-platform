@@ -13,6 +13,6 @@ module.exports = function override(config, env) {
             Buffer: ["buffer", "Buffer"],
         })
     );
-    config.ignoreWarnings = [/Failed to parse source map/];
+    // config.ignoreWarnings = [/Failed to parse source map/];
     return config;
 };
