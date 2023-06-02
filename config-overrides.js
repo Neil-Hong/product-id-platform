@@ -13,6 +13,11 @@ module.exports = function override(config, env) {
             Buffer: ["buffer", "Buffer"],
         })
     );
+    config.module.rules.push({
+        test: /\.js$/,
+        enforce: "pre",
+        use: ["source-map-loader"],
+    });
     config.ignoreWarnings = [/Failed to parse source map/];
     return config;
 };
