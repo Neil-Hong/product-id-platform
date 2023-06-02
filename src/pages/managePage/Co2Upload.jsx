@@ -57,7 +57,7 @@ const Co2Upload = (props) => {
         }
     };
 
-    const { fgStorage } = props;
+    // const { fgStorage } = props;
 
     useEffect(() => {
         getAssetData();
@@ -73,115 +73,115 @@ const Co2Upload = (props) => {
         const apiData = await API.post("productApi", "/products/getItem", data);
         if (apiData && apiData.co2_token.length !== 0) {
             const co2Token = apiData.co2_token[apiData.co2_token.length - 1];
-            try {
-                let searchAssetsResponse = await fgStorage.searchAssets("sandbox", null, co2Token); // ('SP Audits', 'Water')
-                const lastListedAsset =
-                    searchAssetsResponse.result.assets[searchAssetsResponse.result.assets.length - 1];
-                if (lastListedAsset) {
-                    try {
-                        let getAssetResponse = await fgStorage.getAsset(lastListedAsset.block);
-                        console.log(getAssetResponse.result.asset, { depth: null });
-                        setCo2Data({
-                            electricity: getAssetResponse.result.asset[2].Electricity,
-                            cutton_fibres: getAssetResponse.result.asset[4]["Cotton Fibres"],
-                            bleach: getAssetResponse.result.asset[0].Bleach,
-                            waste_water: getAssetResponse.result.asset[6]["Waste Water"],
-                        });
-                    } catch (error) {
-                        console.log(error);
-                        // dispatch(changeLoading(false));
-                    }
-                }
-                dispatch(changeLoading(false));
-            } catch (error) {
-                console.log(error);
-                dispatch(changeLoading(false));
-            }
+            // try {
+            //     let searchAssetsResponse = await fgStorage.searchAssets("sandbox", null, co2Token); // ('SP Audits', 'Water')
+            //     const lastListedAsset =
+            //         searchAssetsResponse.result.assets[searchAssetsResponse.result.assets.length - 1];
+            //     if (lastListedAsset) {
+            //         try {
+            //             let getAssetResponse = await fgStorage.getAsset(lastListedAsset.block);
+            //             console.log(getAssetResponse.result.asset, { depth: null });
+            //             setCo2Data({
+            //                 electricity: getAssetResponse.result.asset[2].Electricity,
+            //                 cutton_fibres: getAssetResponse.result.asset[4]["Cotton Fibres"],
+            //                 bleach: getAssetResponse.result.asset[0].Bleach,
+            //                 waste_water: getAssetResponse.result.asset[6]["Waste Water"],
+            //             });
+            //         } catch (error) {
+            //             console.log(error);
+            //             // dispatch(changeLoading(false));
+            //         }
+            //     }
+            //     dispatch(changeLoading(false));
+            // } catch (error) {
+            //     console.log(error);
+            //     dispatch(changeLoading(false));
+            // }
         } else {
             dispatch(changeLoading(false));
         }
         dispatch(changeLoading(false));
     };
-    async function addAsset() {
-        dispatch(changeLoading(true));
-        const assetElements = [
-            {
-                name: "Bleach",
-                value: input.bleach,
-            },
-            {
-                name: "Bleach_Co2",
-                value: input.bleach_co2,
-            },
-            {
-                name: "Electricity",
-                value: input.electricity,
-            },
-            {
-                name: "Electricity_Co2",
-                value: input.electricity_co2,
-            },
-            {
-                name: "Cotton Fibres",
-                value: input.cutton_fibres,
-            },
-            {
-                name: "Cotton Fibres_Co2",
-                value: input.cutton_fibres_co2,
-            },
-            {
-                name: "Waste Water",
-                value: input.waste_water,
-            },
-            {
-                name: "Waste Water_Co2",
-                value: input.waste_water_co2,
-            },
-        ];
-        let addAssetResponse = await fgStorage.addAsset(
-            assetElements,
-            {
-                parent: null,
-                name: "Veritas-id-Co2 Calculation demo",
-                description: "Veritas Co2 Calculation demo",
-                template: "bafyreifxjblnmcvgeycw7pud52cn5yoyp2a2cf2hos4dpyyj4vu743k2am", // CID of above template
-                filesUploadStart: () => {
-                    console.log("Upload started");
-                },
-                filesUploadEnd: () => {
-                    console.log("Upload finished");
-                },
-                createAssetStart: () => {
-                    console.log("Creating asset");
-                },
-                createAssetEnd: () => {
-                    console.log("Asset created");
-                },
-            },
-            "sandbox"
-        );
+    // async function addAsset() {
+    //     dispatch(changeLoading(true));
+    //     const assetElements = [
+    //         {
+    //             name: "Bleach",
+    //             value: input.bleach,
+    //         },
+    //         {
+    //             name: "Bleach_Co2",
+    //             value: input.bleach_co2,
+    //         },
+    //         {
+    //             name: "Electricity",
+    //             value: input.electricity,
+    //         },
+    //         {
+    //             name: "Electricity_Co2",
+    //             value: input.electricity_co2,
+    //         },
+    //         {
+    //             name: "Cotton Fibres",
+    //             value: input.cutton_fibres,
+    //         },
+    //         {
+    //             name: "Cotton Fibres_Co2",
+    //             value: input.cutton_fibres_co2,
+    //         },
+    //         {
+    //             name: "Waste Water",
+    //             value: input.waste_water,
+    //         },
+    //         {
+    //             name: "Waste Water_Co2",
+    //             value: input.waste_water_co2,
+    //         },
+    //     ];
+    //     let addAssetResponse = await fgStorage.addAsset(
+    //         assetElements,
+    //         {
+    //             parent: null,
+    //             name: "Veritas-id-Co2 Calculation demo",
+    //             description: "Veritas Co2 Calculation demo",
+    //             template: "bafyreifxjblnmcvgeycw7pud52cn5yoyp2a2cf2hos4dpyyj4vu743k2am", // CID of above template
+    //             filesUploadStart: () => {
+    //                 console.log("Upload started");
+    //             },
+    //             filesUploadEnd: () => {
+    //                 console.log("Upload finished");
+    //             },
+    //             createAssetStart: () => {
+    //                 console.log("Creating asset");
+    //             },
+    //             createAssetEnd: () => {
+    //                 console.log("Asset created");
+    //             },
+    //         },
+    //         "sandbox"
+    //     );
 
-        if (addAssetResponse.error != null) {
-            console.log(addAssetResponse.error);
-            dispatch(changeLoading(false));
-        }
+    //     if (addAssetResponse.error != null) {
+    //         console.log(addAssetResponse.error);
+    //         dispatch(changeLoading(false));
+    //     }
 
-        console.log(addAssetResponse.result, { depth: null });
-        setToken(addAssetResponse.result.block);
+    //     console.log(addAssetResponse.result, { depth: null });
+    //     setToken(addAssetResponse.result.block);
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        dispatch(changeLoading(false));
-        const data = {
-            body: {
-                token: addAssetResponse.result.block,
-                username: props.username,
-            },
-        };
-        const apiData = await API.post("productApi", "/products/uploadCo2Token", data);
-        setEditing(true);
-        dispatch(setCo2Token(addAssetResponse.result.block));
-        dispatch(changeLoading(false));
-    }
+    //     await new Promise((resolve) => setTimeout(resolve, 1000));
+    //     dispatch(changeLoading(false));
+    //     const data = {
+    //         body: {
+    //             token: addAssetResponse.result.block,
+    //             username: props.username,
+    //         },
+    //     };
+    //     const apiData = await API.post("productApi", "/products/uploadCo2Token", data);
+    //     setEditing(true);
+    //     dispatch(setCo2Token(addAssetResponse.result.block));
+    //     dispatch(changeLoading(false));
+    // }
     const handleEdit = () => {
         setEditing(false);
     };
@@ -254,7 +254,7 @@ const Co2Upload = (props) => {
                 </div>
             </div>
 
-            <button className="ManagePages-btn right" style={{ width: "200px" }} onClick={addAsset}>
+            <button className="ManagePages-btn right" style={{ width: "200px" }}>
                 Submit to Co2.Storage
             </button>
 
