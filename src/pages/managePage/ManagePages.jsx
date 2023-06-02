@@ -4,7 +4,7 @@ import ManageAccount from "./ManageAccount";
 import ManageProducts from "./ManageProducts";
 import ViewReports from "./ViewReports";
 import { API } from "aws-amplify";
-import { FGStorage } from "@co2-storage/js-api";
+// import { FGStorage } from "@co2-storage/js-api";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { tagChosed } from "../../redux/users/userSlice";
@@ -24,19 +24,19 @@ const ManagePages = () => {
     //     // scrollAnimate();
     // }, []);
 
-    const authType = "metamask";
-    const ipfsNodeType = "browser";
-    const ipfsNodeAddr = "/dns4/web2.co2.storage/tcp/5002/https";
-    const fgApiUrl = "https://web2.co2.storage";
+    // const authType = "metamask";
+    // const ipfsNodeType = "browser";
+    // const ipfsNodeAddr = "/dns4/web2.co2.storage/tcp/5002/https";
+    // const fgApiUrl = "https://web2.co2.storage";
 
-    const fgStorage = useMemo(() => {
-        return new FGStorage({
-            authType: authType,
-            ipfsNodeType: ipfsNodeType,
-            ipfsNodeAddr: ipfsNodeAddr,
-            fgApiHost: fgApiUrl,
-        });
-    }, []);
+    // const fgStorage = useMemo(() => {
+    //     return new FGStorage({
+    //         authType: authType,
+    //         ipfsNodeType: ipfsNodeType,
+    //         ipfsNodeAddr: ipfsNodeAddr,
+    //         fgApiHost: fgApiUrl,
+    //     });
+    // }, []);
 
     // const getBusinessName = async () => {
     //     dispatch(changeLoading(true));
@@ -121,10 +121,8 @@ const ManagePages = () => {
                                 {tagSelected === "manageproduct" ? (
                                     <ManageProducts username={id} dispatch={dispatch} />
                                 ) : null}
-                                {tagSelected === "viewreport" ? (
-                                    <ViewReports fgStorage={fgStorage} username={id} />
-                                ) : null}
-                                {tagSelected === "co2" ? <Co2Upload username={id} fgStorage={fgStorage} /> : null}
+                                {tagSelected === "viewreport" ? <ViewReports username={id} /> : null}
+                                {tagSelected === "co2" ? <Co2Upload username={id} /> : null}
                             </div>
                         </div>
                     </div>
