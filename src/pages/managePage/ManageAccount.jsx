@@ -81,7 +81,7 @@ const ManageAccount = (props) => {
             notify(apiData.message);
 
             dispatch(changeLoading(false));
-            window.location.reload();
+            setTimeout(() => window.location.reload(), 5000);
         } catch (error) {
             console.log(error.response);
             dispatch(changeLoading(false));
@@ -106,10 +106,7 @@ const ManageAccount = (props) => {
             const apiData = await API.post("productApi", "/products/updateBusiness", data);
             dispatch(changeLoading(false));
             notify(apiData.message);
-            const reload = () => {
-                window.location.reload();
-            };
-            setTimeout(reload, 5000);
+            setTimeout(() => window.location.reload(), 5000);
 
             setEditing(false);
         } catch (error) {
@@ -117,7 +114,7 @@ const ManageAccount = (props) => {
             dispatch(changeLoading(false));
         }
     };
-    console.log(business);
+    console.log(inputs);
     return (
         <>
             <ToastContainer
@@ -154,7 +151,7 @@ const ManageAccount = (props) => {
                     </div>
                     <div className="ManagePages-card-right-content">
                         <div className="ManagePages-card-right-content-title">Address</div>
-                        {business.businessAddress && editing ? (
+                        {business.businessName && editing ? (
                             <div>{business.businessAddress}</div>
                         ) : (
                             <input
@@ -167,7 +164,7 @@ const ManageAccount = (props) => {
                     </div>
                     <div className="ManagePages-card-right-content">
                         <div className="ManagePages-card-right-content-title">Website</div>
-                        {business.businessWebsite && editing ? (
+                        {business.businessName && editing ? (
                             <>
                                 <div>{business.businessWebsite}</div>
                             </>

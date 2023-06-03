@@ -60,9 +60,10 @@ const RegisterPage = () => {
         try {
             const apiData = await API.post("authApi", "/auth/register", data);
             console.log(apiData);
-            successNotify(apiData.message);
+            successNotify(apiData.message + "\nJumping to Login page...");
             dispatch(changeLoading(false));
-            navigate("/login");
+            // const changePage = ()
+            setTimeout(() => navigate("/login"), 5000);
         } catch (error) {
             notify(error.response.data.message);
             dispatch(changeLoading(false));

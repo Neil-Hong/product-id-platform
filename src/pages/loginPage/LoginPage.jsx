@@ -62,7 +62,7 @@ const LoginPage = () => {
             successNotify(apiData.message);
             dispatch(userLogIn(data.body.username));
             dispatch(changeLoading(false));
-            window.location.replace(`/manage/${inputs.username}`);
+            setTimeout(() => window.location.replace(`/manage/${inputs.username}`), 5000);
         } catch (error) {
             notify(error.response.data.message);
             dispatch(changeLoading(false));

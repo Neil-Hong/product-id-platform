@@ -193,8 +193,11 @@ const ManageProducts = (props) => {
                     token: [...input.token, cidToken],
                 },
             };
-            await API.post("productApi", "/products/addProducts", data);
+            const apiData = await API.post("productApi", "/products/addProducts", data);
             dispatch(changeLoading(false));
+            // props.dispatch(tagChosed("manageproduct"));
+            successNotify(apiData.message);
+            // setTimeout(() => window.location.reload(), 5000);
         } catch (error) {
             notify(error.response.data.message);
             dispatch(changeLoading(false));
@@ -278,7 +281,7 @@ const ManageProducts = (props) => {
             successNotify(apiData.message);
             props.dispatch(tagChosed("manageproduct"));
             dispatch(changeLoading(false));
-            window.location.reload();
+            setTimeout(() => window.location.reload(), 5000);
         } catch (error) {
             notify(error.response.data.message);
             dispatch(changeLoading(false));

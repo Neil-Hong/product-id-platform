@@ -8,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const ViewReports = (props) => {
-    const { fgStorage } = props;
+    // const { fgStorage } = props;
     const [input, setInput] = useState({
         electricity: 0,
         cutton_fibres: 0,
@@ -42,37 +42,6 @@ const ViewReports = (props) => {
     const getAsset = async () => {
         dispatch(changeLoading(true));
         if (co2_token) {
-            try {
-                let searchAssetsResponse = await fgStorage.searchAssets("sandbox", null, co2_token); // ('SP Audits', 'Water')
-                const lastListedAsset =
-                    searchAssetsResponse.result.assets[searchAssetsResponse.result.assets.length - 1];
-                if (lastListedAsset) {
-                    try {
-                        let getAssetResponse = await fgStorage.getAsset(lastListedAsset.block);
-                        console.log(getAssetResponse.result.asset, { depth: null });
-                        setInput({
-                            electricity: getAssetResponse.result.asset[2].Electricity,
-                            cutton_fibres: getAssetResponse.result.asset[4]["Cutton Fibres"],
-                            bleach: getAssetResponse.result.asset[0].Bleach,
-                            waste_water: getAssetResponse.result.asset[6]["Waste Water"],
-                        });
-                        setCo2Input({
-                            electricity_co2: getAssetResponse.result.asset[3].Electricity_Co2,
-                            cutton_fibres_co2: getAssetResponse.result.asset[5]["Cotton Fibres_Co2"],
-                            bleach_co2: getAssetResponse.result.asset[1].Bleach_Co2,
-                            waste_water_co2: getAssetResponse.result.asset[7]["Waste Water_Co2"],
-                        });
-                        setLoaded(true);
-                        dispatch(changeLoading(false));
-                    } catch (error) {
-                        console.log(error);
-                        dispatch(changeLoading(false));
-                    }
-                }
-            } catch (error) {
-                console.log(error);
-                dispatch(changeLoading(false));
-            }
         } else {
             const data = {
                 body: {
@@ -82,37 +51,6 @@ const ViewReports = (props) => {
             const apiData = await API.post("productApi", "/products/getItem", data);
             if (apiData && apiData.co2_token.length !== 0) {
                 const token = apiData.co2_token[apiData.co2_token.length - 1];
-                try {
-                    let searchAssetsResponse = await fgStorage.searchAssets("sandbox", null, token); // ('SP Audits', 'Water')
-                    const lastListedAsset =
-                        searchAssetsResponse.result.assets[searchAssetsResponse.result.assets.length - 1];
-                    if (lastListedAsset) {
-                        try {
-                            let getAssetResponse = await fgStorage.getAsset(lastListedAsset.block);
-                            console.log(getAssetResponse.result.asset, { depth: null });
-                            setInput({
-                                electricity: getAssetResponse.result.asset[2].Electricity,
-                                cutton_fibres: getAssetResponse.result.asset[4]["Cotton Fibres"],
-                                bleach: getAssetResponse.result.asset[0].Bleach,
-                                waste_water: getAssetResponse.result.asset[6]["Waste Water"],
-                            });
-                            setCo2Input({
-                                electricity_co2: getAssetResponse.result.asset[3].Electricity_Co2,
-                                cutton_fibres_co2: getAssetResponse.result.asset[5]["Cotton Fibres_Co2"],
-                                bleach_co2: getAssetResponse.result.asset[1].Bleach_Co2,
-                                waste_water_co2: getAssetResponse.result.asset[7]["Waste Water_Co2"],
-                            });
-                            setLoaded(true);
-                            dispatch(changeLoading(false));
-                        } catch (error) {
-                            console.log(error);
-                            dispatch(changeLoading(false));
-                        }
-                    }
-                } catch (error) {
-                    console.log(error);
-                    dispatch(changeLoading(false));
-                }
             } else {
                 dispatch(changeLoading(false));
                 notify();
