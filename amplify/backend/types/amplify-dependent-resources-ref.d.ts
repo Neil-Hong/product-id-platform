@@ -1,38 +1,40 @@
 export type AmplifyDependentResourcesAttributes = {
-    "storage": {
-        "productDB": {
-            "Name": "string",
-            "Arn": "string",
-            "StreamArn": "string",
-            "PartitionKeyName": "string",
-            "PartitionKeyType": "string",
-            "Region": "string"
-        }
+  "api": {
+    "authApi": {
+      "ApiId": "string",
+      "ApiName": "string",
+      "RootUrl": "string"
     },
-    "function": {
-        "authFunction": {
-            "Name": "string",
-            "Arn": "string",
-            "Region": "string",
-            "LambdaExecutionRole": "string"
-        },
-        "productFunction": {
-            "Name": "string",
-            "Arn": "string",
-            "Region": "string",
-            "LambdaExecutionRole": "string"
-        }
-    },
-    "api": {
-        "authApi": {
-            "RootUrl": "string",
-            "ApiName": "string",
-            "ApiId": "string"
-        },
-        "productApi": {
-            "RootUrl": "string",
-            "ApiName": "string",
-            "ApiId": "string"
-        }
+    "productApi": {
+      "ApiId": "string",
+      "ApiName": "string",
+      "RootUrl": "string"
     }
+  },
+  "function": {
+    "authFunction": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
+    "productFunction": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    }
+  },
+  "storage": {
+    "productDB": {
+      "Arn": "string",
+      "Name": "string",
+      "PartitionKeyName": "string",
+      "PartitionKeyType": "string",
+      "Region": "string",
+      "StreamArn": "string"
+    }
+  }
 }

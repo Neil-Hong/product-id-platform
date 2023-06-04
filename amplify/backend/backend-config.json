@@ -1,59 +1,109 @@
 {
-  "storage": {
-    "productDB": {
-      "service": "DynamoDB",
-      "providerPlugin": "awscloudformation"
-    }
-  },
-  "hosting": {
-    "amplifyhosting": {
-      "service": "amplifyhosting",
-      "type": "cicd",
-      "lastPushTimeStamp": "2023-05-15T18:38:28.931Z"
+  "api": {
+    "authApi": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "authFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "productApi": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "productFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
     }
   },
   "function": {
     "authFunction": {
       "build": true,
+      "dependsOn": [],
       "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": []
+      "service": "Lambda"
     },
     "productFunction": {
       "build": true,
+      "dependsOn": [],
       "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": []
+      "service": "Lambda"
     }
   },
-  "api": {
-    "authApi": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
+  "hosting": {
+    "amplifyhosting": {
+      "lastPushTimeStamp": "2023-05-15T18:38:28.931Z",
+      "service": "amplifyhosting",
+      "type": "cicd"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_authFunction_deploymentBucketName": {
+      "usedBy": [
         {
           "category": "function",
-          "resourceName": "authFunction",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
+          "resourceName": "authFunction"
         }
       ]
     },
-    "productApi": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
+    "AMPLIFY_function_authFunction_s3Key": {
+      "usedBy": [
         {
           "category": "function",
-          "resourceName": "productFunction",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
+          "resourceName": "authFunction"
         }
       ]
+    },
+    "AMPLIFY_function_productFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "productFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_productFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "productFunction"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "productDB": {
+      "providerPlugin": "awscloudformation",
+      "service": "DynamoDB"
     }
   }
 }
