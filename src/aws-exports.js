@@ -3,13 +3,6 @@
 
 const awsmobile = {
     "aws_project_region": "ap-southeast-2",
-    "aws_dynamodb_all_tables_region": "ap-southeast-2",
-    "aws_dynamodb_table_schemas": [
-        {
-            "tableName": "userTable-dev",
-            "region": "ap-southeast-2"
-        }
-    ],
     "aws_cloud_logic_custom": [
         {
             "name": "authApi",
@@ -19,6 +12,13 @@ const awsmobile = {
         {
             "name": "productApi",
             "endpoint": "https://4axa8k4c1g.execute-api.ap-southeast-2.amazonaws.com/dev",
+            "region": "ap-southeast-2"
+        }
+    ],
+    "aws_dynamodb_all_tables_region": "ap-southeast-2",
+    "aws_dynamodb_table_schemas": [
+        {
+            "tableName": "userTable-dev",
             "region": "ap-southeast-2"
         }
     ]

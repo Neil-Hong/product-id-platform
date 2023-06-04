@@ -108,7 +108,7 @@ const login = async (req, res) => {
             } else if (!(await checkPassword(password, data.Items[0].password))) {
                 res.status(401).send({ message: "Wrong username or password!" });
             } else {
-                const token = jwt.sign({ userId: data.Items[0].id }, "jwtkey");
+                const token = jwt.sign({ userId: data.Items[0].id }, "veritas-jwtkey", { expiresIn: "1h" });
                 console.log(token);
                 res.set("Set-Cookie", `access_token=${token}; HttpOnly; Secure; SameSite=None`);
                 res.send({ message: "Login Successfully!" });

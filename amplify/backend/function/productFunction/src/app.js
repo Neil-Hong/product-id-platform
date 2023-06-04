@@ -28,6 +28,7 @@ app.use(function (req, res, next) {
     next();
 });
 
+//Routes
 app.post("/products/registerBusiness", products.registerBusiness);
 app.post("/products/getBusinessName", products.getBusinessName);
 app.post("/products/registerBrands", products.registerBrands);
