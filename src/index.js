@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import rootStore from "./redux/store";
 import App from "./App";
+import {} from "stylis-plugin-rtl";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
